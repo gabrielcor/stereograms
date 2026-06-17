@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Camp Scene Stereogram</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202124;
+      --muted: #5b616b;
+      --line: #d5d8de;
+      --paper: #f7f6f2;
+      --surface: #ffffff;
+      --accent: #496b3f;
+      --accent-strong: #315029;
+      --focus: #b5522c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(247, 246, 242, 0.96)),
+        var(--paper);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    header {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .deck {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .viewer-shell {
+      display: grid;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .viewer {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      min-height: 260px;
+      overflow: hidden;
+      background: #e8e4da;
+      border: 1px solid var(--line);
+    }
+
+    .viewer img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .viewer .animated,
+    .viewer .thumbnail {
+      width: min(100%, 287px);
+    }
+
+    .viewer .original {
+      width: 100%;
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      background: var(--accent);
+      color: #ffffff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--accent-strong);
+      border-color: var(--accent-strong);
+    }
+
+    button:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    button.secondary {
+      background: var(--surface);
+      color: var(--accent-strong);
+    }
+
+    button.secondary:hover {
+      background: #eef2eb;
+    }
+
+    .notice {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 640px) {
+      main {
+        width: min(100% - 20px, 1120px);
+        padding-top: 18px;
+      }
+
+      .toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Camp Scene - "Strapped" Miner</h1>
+      <p class="deck">A local recreation of the USGS stereogram view using the source images in this folder.</p>
+    </header>
+
+    <section class="viewer-shell" aria-label="Stereogram viewer">
+      <div class="viewer">
+        <img class="original" src="assets/animate_this_01.jpg" alt="Original side-by-side stereograph of a strapped miner in a creek">
+        <img class="thumbnail is-hidden" src="assets/animate_this_thumbnail.jpg" alt="Thumbnail view of the miner">
+        <img class="animated is-hidden" src="assets/animated.gif" alt="Animated stereogram">
+      </div>
+
+      <div class="toolbar" aria-label="Stereogram controls">
+        <button type="button" id="animateButton">Animate this</button>
+        <button type="button" id="thumbnailButton" class="secondary">Show Thumbnail</button>
+        <button type="button" id="originalButton" class="secondary is-hidden">View Original</button>
+      </div>
+
+      <p class="notice">Clicking Animate this loads a small animated GIF which may flash. Use Stop Animation to hide it.</p>
+    </section>
+  </main>
+
+  <script>
+    const original = document.querySelector('.original');
+    const thumbnail = document.querySelector('.thumbnail');
+    const animated = document.querySelector('.animated');
+    const animateButton = document.getElementById('animateButton');
+    const thumbnailButton = document.getElementById('thumbnailButton');
+    const originalButton = document.getElementById('originalButton');
+
+    function showOriginal() {
+      original.classList.remove('is-hidden');
+      thumbnail.classList.add('is-hidden');
+      animated.classList.add('is-hidden');
+      animateButton.classList.remove('is-hidden');
+      thumbnailButton.classList.remove('is-hidden');
+      thumbnailButton.textContent = 'Show Thumbnail';
+      originalButton.classList.add('is-hidden');
+    }
+
+    function showThumbnail() {
+      original.classList.add('is-hidden');
+      thumbnail.classList.remove('is-hidden');
+      animated.classList.add('is-hidden');
+      animateButton.classList.remove('is-hidden');
+      thumbnailButton.classList.add('is-hidden');
+      originalButton.classList.remove('is-hidden');
+    }
+
+    function showAnimation() {
+      original.classList.add('is-hidden');
+      thumbnail.classList.add('is-hidden');
+      animated.classList.remove('is-hidden');
+      animateButton.classList.add('is-hidden');
+      thumbnailButton.classList.remove('is-hidden');
+      thumbnailButton.textContent = 'Stop Animation';
+      originalButton.classList.remove('is-hidden');
+    }
+
+    animateButton.addEventListener('click', showAnimation);
+    thumbnailButton.addEventListener('click', showThumbnail);
+    originalButton.addEventListener('click', showOriginal);
+
+  </script>
+</body>
+</html>
